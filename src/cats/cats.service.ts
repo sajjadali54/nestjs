@@ -15,4 +15,10 @@ export class CatsService {
   findAll(): Cat[] {
     return this.cats;
   }
+
+  findOne(id: number): Cat {
+    const cat = this.cats.find((cat) => cat.id === id);
+    console.log('Found Cat', cat);
+    return cat;
+  }
 }
