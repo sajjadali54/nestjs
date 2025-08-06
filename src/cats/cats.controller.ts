@@ -1,29 +1,26 @@
-import { Controller, Get, Param, Post, Redirect, Req } from '@nestjs/common';
+import { Controller, Get, Param, Post} from '@nestjs/common';
 
-import type { Request } from 'express';
+import { CATS_DATA } from './cats';
+import { Cat } from './cats.model';
 
 
 @Controller('cats')
 export class CatsController {
-  private cats: { id: number; name: string; age: number }[] = [];
+  private cats: Cat[] = [];
 
   constructor() {
-    this.cats = [
-      { id: 1, name: 'Whiskers', age: 2 },
-      { id: 2, name: 'Felix', age: 4 },
-      { id: 3, name: 'Garfield', age: 5 },
-    ];
+    this.cats = CATS_DATA;
   }
-
+  
   @Get()
-  findAll(): { id: number; name: string; age: number }[] {
+  findAll(): Cat[] {
     return this.cats;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): string {
-    console.log(id);
-    return `This action returns a #${id} cat`;
+  findOne(@Param('id') id: string): string | Cat {
+    const cat = this.cats.find((cat) => cat.id.toString() === id);
+    return cat || 'Cat not found';
   }
 
   @Post()
