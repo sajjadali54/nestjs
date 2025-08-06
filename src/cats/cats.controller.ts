@@ -1,7 +1,7 @@
-import { Controller, Get, Param, Post} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post} from '@nestjs/common';
 
 import { CATS_DATA } from './cats';
-import { Cat } from './cats.model';
+import { CreateCatDto, Cat } from './create-cat.dto';
 
 
 @Controller('cats')
@@ -24,7 +24,10 @@ export class CatsController {
   }
 
   @Post()
-  create(): string {
-    return 'This action adds a new cat';
+  create(@Body() createCatDto: CreateCatDto): Cat {
+    const lastCat = this.cats[this.cats.length - 1];
+    const newCat = { ...createCatDto, id: lastCat.id + 1 };
+    this.cats.push(newCat);
+    return newCat;
   }
 }
