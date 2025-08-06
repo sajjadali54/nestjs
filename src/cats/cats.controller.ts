@@ -2,13 +2,22 @@ import { Controller, Get, Param, Post, Redirect, Req } from '@nestjs/common';
 
 import type { Request } from 'express';
 
+
 @Controller('cats')
 export class CatsController {
+  private cats: { id: number; name: string; age: number }[] = [];
+
+  constructor() {
+    this.cats = [
+      { id: 1, name: 'Whiskers', age: 2 },
+      { id: 2, name: 'Felix', age: 4 },
+      { id: 3, name: 'Garfield', age: 5 },
+    ];
+  }
+
   @Get()
-  @Redirect('https://nestjs.com', 301)
-  findAll(@Req() request: Request): string {
-    console.log(request.query);
-    return 'This action returns all cats';
+  findAll(): { id: number; name: string; age: number }[] {
+    return this.cats;
   }
 
   @Get(':id')
