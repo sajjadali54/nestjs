@@ -26,7 +26,12 @@ export class CatsController {
   @Post()
   create(@Body() createCatDto: CreateCatDto): Cat {
     const lastCat = this.cats[this.cats.length - 1];
-    const newCat = { ...createCatDto, id: lastCat.id + 1 };
+    const newCat = {
+      name: createCatDto.name,
+      age: createCatDto.age,
+      breed: createCatDto.breed,
+      id: lastCat.id + 1,
+    };
     this.cats.push(newCat);
     return newCat;
   }
