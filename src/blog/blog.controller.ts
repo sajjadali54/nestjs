@@ -7,7 +7,10 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
+
+import { Blog } from 'generated/prisma';
 
 import type { BlogPost, BlogResponse } from './blog.interface';
 import { BlogService } from './blog.service';
@@ -17,18 +20,18 @@ export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  async create(@Body() blogPost: BlogPost): Promise<BlogPost> {
+  async create(@Body() blogPost: BlogPost): Promise<Blog> {
     const post = await this.blogService.create(blogPost);
     return post;
   }
 
   @Get()
-  findAll(): BlogPost[] {
-    return this.blogService.findAll();
+  async findAll(): Promise<Blog[]> {
+    return this.blogService.findAll({});
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<BlogPost | BlogResponse> {
+  async findOne(@Param('id') id: string): Promise<Blog | BlogResponse> {
     const post = await this.blogService.findOne(+id);
     if (!post)
       return { status: HttpStatus.NOT_FOUND, message: 'Blog post not found.' };
@@ -38,9 +41,12 @@ export class BlogController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() updatedPost: Partial<BlogPost>,
-  ): Promise<BlogPost | BlogResponse> {
-    const post = await this.blogService.update(+id, updatedPost);
+    @Body() updatedPost: Partial<Blog>,
+  ): Promise<Blog | BlogResponse> {
+    const post = await this.blogService.update({
+      where: { id: +id },
+      data: updatedPost,
+    });
     if (!post)
       return { status: HttpStatus.NOT_FOUND, message: 'Blog post not found.' };
     return post;
@@ -48,7 +54,7 @@ export class BlogController {
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<BlogResponse> {
-    const isRemoved = await this.blogService.remove(+id);
+    const isRemoved = await this.blogService.remove({ id: +id });
     return isRemoved
       ? { status: HttpStatus.OK, message: 'Blog post successfully deleted.' }
       : { status: HttpStatus.NOT_FOUND, message: 'Blog post not found.' };
