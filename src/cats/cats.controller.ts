@@ -20,7 +20,7 @@ export class CatsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Cat> {
+  async findOne(@Param('id') id: number): Promise<Cat | undefined> {
     const idNumber = Number(id);
     // console.log(this.catsService.findAll());
     const cat = this.catsService.findOne(idNumber);

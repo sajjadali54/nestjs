@@ -16,7 +16,7 @@ export class CatsService {
     return this.cats;
   }
 
-  findOne(id: number): Cat {
+  findOne(id: number): Cat | undefined {
     const cat = this.cats.find((cat) => cat.id === id);
     console.log('Found Cat', cat);
     return cat;

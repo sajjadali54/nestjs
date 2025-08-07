@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-interface BlogPost {
+export interface BlogPost {
   id: number;
   title: string;
   content: string;
@@ -10,7 +10,7 @@ interface BlogPost {
 export class BlogService {
   private readonly blogPosts: BlogPost[] = [];
 
-  create(blogPost: BlogPost) {
+  async create(blogPost: BlogPost): Promise<BlogPost> {
     const lastId = this.blogPosts[this.blogPosts.length - 1]?.id || 0;
     const post = {
       title: blogPost.title,
@@ -25,11 +25,14 @@ export class BlogService {
     return this.blogPosts;
   }
 
-  findOne(id: number): BlogPost | undefined {
+  async findOne(id: number): Promise<BlogPost | undefined> {
     return this.blogPosts.find((post) => post.id === id);
   }
 
-  update(id: number, updatedPost: Partial<BlogPost>): BlogPost | undefined {
+  async update(
+    id: number,
+    updatedPost: Partial<BlogPost>,
+  ): Promise<BlogPost | undefined> {
     const postIndex = this.blogPosts.findIndex((post) => post.id === id);
     if (postIndex === -1) return undefined;
 
@@ -41,7 +44,7 @@ export class BlogService {
     return this.blogPosts[postIndex];
   }
 
-  remove(id: number): boolean {
+  async remove(id: number): Promise<boolean> {
     const postIndex = this.blogPosts.findIndex((post) => post.id === id);
     if (postIndex === -1) return false;
     this.blogPosts.splice(postIndex, 1);
