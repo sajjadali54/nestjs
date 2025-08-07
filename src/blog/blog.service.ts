@@ -17,21 +17,8 @@ export class BlogService {
     });
   }
 
-  async findAll(params?: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.BlogWhereUniqueInput;
-    where?: Prisma.BlogWhereInput;
-    orderBy?: Prisma.BlogOrderByWithRelationInput;
-  }): Promise<Blog[]> {
-    const { skip, take, cursor, where, orderBy } = params!;
-    return this.prisma.blog.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+  async findAll(): Promise<Blog[]> {
+    return this.prisma.blog.findMany();
   }
 
   async findOne(id: number): Promise<Blog | null> {

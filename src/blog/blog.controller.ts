@@ -27,7 +27,7 @@ export class BlogController {
 
   @Get()
   async findAll(): Promise<Blog[]> {
-    return this.blogService.findAll({});
+    return this.blogService.findAll();
   }
 
   @Get(':id')
