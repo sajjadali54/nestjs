@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-export interface BlogPost {
-  id: number;
-  title: string;
-  content: string;
-}
+import { BlogPost } from './blog.interface';
 
 @Injectable()
 export class BlogService {

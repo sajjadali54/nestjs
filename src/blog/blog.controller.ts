@@ -9,7 +9,8 @@ import {
   Put,
 } from '@nestjs/common';
 
-import { BlogService, type BlogPost } from './blog.service';
+import type { BlogPost, BlogResponse } from './blog.interface';
+import { BlogService } from './blog.service';
 
 @Controller('blog')
 export class BlogController {
@@ -27,8 +28,10 @@ export class BlogController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<BlogPost | undefined> {
+  async findOne(@Param('id') id: string): Promise<BlogPost | BlogResponse> {
     const post = await this.blogService.findOne(+id);
+    if (!post)
+      return { status: HttpStatus.NOT_FOUND, message: 'Blog post not found.' };
     return post;
   }
 
@@ -36,14 +39,15 @@ export class BlogController {
   async update(
     @Param('id') id: string,
     @Body() updatedPost: Partial<BlogPost>,
-  ): Promise<BlogPost | undefined> {
-    return this.blogService.update(+id, updatedPost);
+  ): Promise<BlogPost | BlogResponse> {
+    const post = await this.blogService.update(+id, updatedPost);
+    if (!post)
+      return { status: HttpStatus.NOT_FOUND, message: 'Blog post not found.' };
+    return post;
   }
 
   @Delete(':id')
-  async remove(
-    @Param('id') id: string,
-  ): Promise<{ status: HttpStatus; message: string }> {
+  async remove(@Param('id') id: string): Promise<BlogResponse> {
     const isRemoved = await this.blogService.remove(+id);
     return isRemoved
       ? { status: HttpStatus.OK, message: 'Blog post successfully deleted.' }
